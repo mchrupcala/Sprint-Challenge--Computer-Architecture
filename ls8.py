@@ -19,10 +19,12 @@ program = []
 
 for x in f:
     line = x.split('#', 1)[0]
+    # print(line)
     line = line.strip('\n')
-    line = int(line, 2)
-
-    program.append(line)
+    # print(line)
+    if line != '':
+        line = int(line, 2)
+        program.append(line)
 
 cpu.load(program)
 cpu.run()

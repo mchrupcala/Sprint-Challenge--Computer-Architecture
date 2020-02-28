@@ -57,11 +57,11 @@ class CPU:
             # print(reg_a, reg_b)
             self.reg[reg_a] *= self.reg[reg_b]
         elif op == 'CMP':
-            if reg_a < reg_b:
+            if self.reg[reg_a] < self.reg[reg_b]:
                 self.FL = 0b00000100
-            elif reg_a > reg_b:
+            elif self.reg[reg_a] > self.reg[reg_b]:
                 self.FL = 0b00000010
-            elif reg_a == reg_b:
+            elif self.reg[reg_a] == self.reg[reg_b]:
                 self.FL = 0b00000001
             else:
                 self.FL = 0b00000000
@@ -76,7 +76,7 @@ class CPU:
 
         print(f"TRACE: %02X | %02X %02X %02X |" % (
             self.pc,
-            #self.fl,
+            self.FL,
             #self.ie,
             self.ram_read(self.pc),
             self.ram_read(self.pc + 1),
@@ -151,19 +151,27 @@ class CPU:
 
                 #JMP
             elif command == 0b01010100:
-                self.pc = self.ram[self.pc+1]
-                #I thiiiink this is right, but I"m not 100% have to test it.
+                given_register = self.ram[self.pc+1]
+                self.pc = self.reg[given_register]
 
                 #JEQ
             elif command == 0b01010101:
-                if str(self.FL)[5] == 1:
-                    self.pc = self.ram[self.pc+1]
+                if self.FL & 1 == 1:
+                    given_register = self.ram[self.pc+1]
+                    self.pc = self.reg[given_register]
+                else:
+                    self.pc += 2
 
                 #JNE
             elif command == 0b01010110:
-                if str(self.FL)[5] == 0:
-                    self.pc = self.ram[self.pc+1]
-            
+                if self.FL & 1 == 0:
+                    given_register = self.ram[self.pc+1]
+                    self.pc = self.reg[given_register]
+                else:
+                    self.pc += 2
             else:
                 print(f"Sorry I couldn't find that command: {command}, {self.pc}")
                 sys.exit(0)
+
+
+                #I have to go through step by step to see where it's breaking
