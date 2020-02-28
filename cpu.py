@@ -150,16 +150,19 @@ class CPU:
                 self.pc += 3
 
                 #JMP
-            elif command == 0b:
-                pass
+            elif command == 0b01010100:
+                self.pc = self.ram[self.pc+1]
+                #I thiiiink this is right, but I"m not 100% have to test it.
 
                 #JEQ
-            elif command == 0b:
-                pass
+            elif command == 0b01010101:
+                if str(self.FL)[5] == 1:
+                    self.pc = self.ram[self.pc+1]
 
                 #JNE
-            elif command == 0b:
-                pass
+            elif command == 0b01010110:
+                if str(self.FL)[5] == 0:
+                    self.pc = self.ram[self.pc+1]
             
             else:
                 print(f"Sorry I couldn't find that command: {command}, {self.pc}")
