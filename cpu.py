@@ -52,10 +52,10 @@ class CPU:
         if op == "ADD":
             self.reg[reg_a] += self.reg[reg_b]
         #elif op == "SUB": etc
+
         elif op == "MUL":
-            # print(self.ram[reg_a], self.ram[reg_b])
-            # print(reg_a, reg_b)
             self.reg[reg_a] *= self.reg[reg_b]
+
         elif op == 'CMP':
             if self.reg[reg_a] < self.reg[reg_b]:
                 self.FL = 0b00000100
@@ -65,6 +65,22 @@ class CPU:
                 self.FL = 0b00000001
             else:
                 self.FL = 0b00000000
+
+        elif op == 'AND':
+            andVal = reg_a & reg_b
+            self.reg[reg_a] = andVal
+
+        elif op == 'OR':
+            orVal = reg_a | reg_b
+            self.reg[reg_a] = orVal
+
+        elif op == 'XOR':
+            xVal = reg_a ^ reg_b
+            self.reg[reg_a] = xVal
+
+        elif op == 'NOT':
+            self.reg[reg_a] = 0b11111111 - self.reg[reg_a]
+
         else:
             raise Exception("Unsupported ALU operation")
 
@@ -169,6 +185,28 @@ class CPU:
                     self.pc = self.reg[given_register]
                 else:
                     self.pc += 2
+
+            #STRETCH
+                #AND
+            elif command == 0b10101000:
+                self.alu('AND', operand_a, operand_b)
+                self.pc += 3
+
+                #OR
+            elif command == 0b10101010:
+                self.alu('OR', operand_a, operand_b)
+                self.pc += 3
+
+                #XOR
+            elif command == 0b10101011:
+                self.alu('XOR', operand_a, operand_b)
+                self.pc += 3
+
+                #NOT
+            elif command == 0b01101001:
+                self.alu('NOT', operand_a)
+                self.pc += 2
+
             else:
                 print(f"Sorry I couldn't find that command: {command}, {self.pc}")
                 sys.exit(0)
