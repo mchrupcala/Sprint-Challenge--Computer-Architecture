@@ -14,6 +14,7 @@ class CPU:
         self.pc = 0
         # self.reg = self.ram[self.pc]
         self.sp = 7
+        self.FL = 0b00000000
 
     def ram_read(self, read_address):
         #read the value at the read_address. Not sure if this is right...
@@ -55,6 +56,15 @@ class CPU:
             # print(self.ram[reg_a], self.ram[reg_b])
             # print(reg_a, reg_b)
             self.reg[reg_a] *= self.reg[reg_b]
+        elif op == 'CMP':
+            if reg_a < reg_b:
+                self.FL = 0b00000100
+            elif reg_a > reg_b:
+                self.FL = 0b00000010
+            elif reg_a == reg_b:
+                self.FL = 0b00000001
+            else:
+                self.FL = 0b00000000
         else:
             raise Exception("Unsupported ALU operation")
 
@@ -133,6 +143,23 @@ class CPU:
                 #copy the value in the given register to the address pointed to by SP
                 self.ram[self.reg[self.sp]] = reg_val
                 self.pc += 2
+
+                #CMP
+            elif command == 0b10100111:
+                self.alu("CMP", operand_a, operand_b)
+                self.pc += 3
+
+                #JMP
+            elif command == 0b:
+                pass
+
+                #JEQ
+            elif command == 0b:
+                pass
+
+                #JNE
+            elif command == 0b:
+                pass
             
             else:
                 print(f"Sorry I couldn't find that command: {command}, {self.pc}")
